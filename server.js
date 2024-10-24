@@ -11,6 +11,10 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+app.use(express.static(path.join(__dirname, "./client/dist")));
+
+app.get("/",(req,res) => res.sendFile(path.join(__dirname, "./client/dist/", "index.html")));
+
 
 const functionExec = (code, language) => {
   return new Promise((resolve, reject) => {
@@ -74,7 +78,7 @@ app.post("/compile", async (req, res) => {
     const output = await functionExec(code, language);
     res.json({ output });
   } catch (err) {
-    res.status(500).json({ message: err });
+    res.status(500).json({ message: "Error while compiling" });
   }
 });
 

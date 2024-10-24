@@ -3,20 +3,24 @@ import axios from 'axios';
 
 const App = () => {
   const [code, setCode] = useState('');
+  const [loading,setLoading] = useState(false);
   const [language, setLanguage] = useState('JavaScript');
   const [output, setOutput] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async () => {
     setError(''); 
+    setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/compile', {
+      const response = await axios.post('/compile', {
         code,
         language,
       });
 
+      setLoading(false);
       setOutput(response.data.output);
     } catch (err) {
+      setLoading(false);
       setError('Error compiling code: ' + (err.response?.data?.message || err.message));
     }
   };
@@ -43,7 +47,7 @@ const App = () => {
           className="p-2 bg-blue-500 text-white rounded-lg"
           onClick={handleSubmit}
         >
-          Compile
+          {loading ? "Compiling" : "Compile"}
         </button>
       </div>
       {error && <div className="mt-2 text-red-500">{error}</div>}
